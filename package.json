@@ -1,0 +1,19 @@
+{
+  "name": "habitree",
+  "version": "1.0.0",
+  "description": "an application that allows habit tracking and a reward system based around growing a real world plant",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhoomeiK/habitree.git"
+  },
+  "author": "Rohan Pandey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KhoomeiK/habitree/issues"
+  },
+  "homepage": "https://github.com/KhoomeiK/habitree#readme"
+}
