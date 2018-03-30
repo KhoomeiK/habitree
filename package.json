@@ -4,7 +4,7 @@
   "description": "an application that allows habit tracking and a reward system based around growing a real world plant",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "null"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/KhoomeiK/habitree/issues"
   },
-  "homepage": "https://github.com/KhoomeiK/habitree#readme"
+  "homepage": "https://github.com/KhoomeiK/habitree#readme",
+  "dependencies": {
+    "nodemon": "^1.17.2"
+  }
 }
