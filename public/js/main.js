@@ -43,6 +43,8 @@ $(() =>  {
 
 	function send(cont) { // should also post to firebase
       var link = "https://dweet.io/dweet/for/hbtr?" + cont;
+      // get cont habit object from firebase
+      // calculate habit streak, if = 0, find last date
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("GET", link, false);
       xmlHttp.send(null);
