@@ -83,8 +83,8 @@ void loop() {
 //        delay(20);
 //      }
       // move servo 45 deg for 1 second
-    }
-  }
+//    }
+//  }
 
 //  Serial.println("closing connection");
 //  Serial.println();
