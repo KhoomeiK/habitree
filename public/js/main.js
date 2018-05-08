@@ -1,5 +1,11 @@
 $(() =>  {
 	// Initialize Firebase
+
+	firebase.initializeApp();
+
+	var app = firebase.app();
+	var db = firebase.firestore();
+
 	var config = {
 	  apiKey: "AIzaSyAUkLOwbx0XFasSPQfbWSuBgoTQIENOGZo",
 	  authDomain: "habitree-14839.firebaseapp.com",
@@ -9,30 +15,17 @@ $(() =>  {
 	  messagingSenderId: "927419743609"
 	};
 
-	firebase.initializeApp(config);
 
-	const provider = new firebase.auth.GoogleAuthProvider();
-	function signInButton() {
-		firebase.auth().signInWithPopup(provider).then((result) => {
-			// This gives you a Google Access Token. You can use it to access the Google API.
-			const token = result.credential.accessToken;
-			console.log(token);
-			// Hide modal
-			// if (!$('#modal').hasClass('hidden')) {
-			// 	$('#modal').addClass('hidden');
-			// }
-			// Hide the Sign In Button
-			// if (!$('#sign-in-btn').hasClass('hidden')) {
-			// 	$('#sign-in-btn').addClass('hidden');
-			// }
-			// Show the User signed in
-			// $('#sign-in-user').removeClass('hidden');
-		}).catch((error) => {
-			// $('#modal').removeClass('hidden');
-			// $('#modal-title').text(`Error ${error.code}`);
-			// $('#modal-content').text(error.message);
-		});
-	}
+	// const provider = new firebase.auth.GoogleAuthProvider();
+	// function signInButton() {
+	// 	firebase.auth().signInWithPopup(provider).then((result) => {
+	// 		const token = result.credential.accessToken;
+	// 		console.log(token);
+	// 	}).catch((error) => {
+	// 		console.log(error)
+	// 	});
+	// }
+
 
 	function newHabit() {
 		var cont = $("#tx").val()
@@ -51,7 +44,7 @@ $(() =>  {
       console.log(xmlHttp.responseText);
 	}
 
-	$("div > button").click(()=>{
+	$("div > button").click(()=>{ // sign in button
 		console.log("signing in");
 		signInButton();
 	});
