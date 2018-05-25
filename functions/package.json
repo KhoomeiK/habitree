@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "firebase-admin": "^5.4.1",
-    "firebase-functions": "^1.0.1"
+    "firebase-functions": "^1.0.1",
+    "firebase-firestore": "5.0.1"
   },
   "private": true
 }

@@ -5,7 +5,7 @@
  * 
  * Starter code for matrix from https://www.hackster.io/Treebug842/16x16-led-matrix-display-012b1e
  * 
- * Funtion of the code is to change the emotion displayed on the 16x16 dot matrix along with a corresponding message
+ * Function of the code is to change the emotion displayed on the 16x16 dot matrix along with a corresponding message
  * written on the 16x2 LCD screen by sending a HIGH signal to pin 17, 18, 19, 20, 21 from another arduino. Each of these 
  * pins will change the emotion on the screen as well as the message on the lcd.
 */
