@@ -1,10 +1,18 @@
-const functions = require('firebase-functions');
+const firebase = require("firebase");
+const functions = require('firebase/functions');
+const admin = require('firebase/admin');
+const firestore = require('firebase/firestore');
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
+// Create and Deploy Your First Cloud Functions
+// https://firebase.google.com/docs/functions/write-firebase-functions
 
 exports.helloWorld = functions.https.onRequest((request, response) => {
 	firebase.send("Hello from Firebase!");
+});
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+	databaseURL: 'https://pagimo-hack.firebaseio.com'
 });
 
 // module.exports.createUser = (uid, name, username) => new Promise((resolve, reject) => {
