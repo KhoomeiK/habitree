@@ -48,11 +48,11 @@ $(() =>  {
 					for(var i in habArr) {
 						console.log(habArr[i]);
 						newHabit(habArr[i][0]); // spawns habit buttons for each habit
-						// for(var i=hab.dates.length()-1; i > 0; i--) {
-						// 	utca = hab.dates[i];
-						// 	m = utca.substring(5,7);
-						// 	d = utca.substring(9);
-						// 	// this is too cumbersome, check in date library for function to check if dates are sequential
+						var dates = habArr[i][1].dates;
+						for (var j=dates.length-1; j > dates.length-4; j--)
+							if (Date.parse(dates[j])-Date.parse(dates[j-1]) != 86400000)
+								console.log(dates.length-j);
+								// not consecutive
 						// }
 						// $("#habits").append();
 						// calculates streak and displays for each
@@ -76,15 +76,23 @@ $(() =>  {
 	    xmlHttp.open("GET", link, false); // dweets hab to the link
 	    xmlHttp.send(null);
 	    console.log(xmlHttp.responseText); // reassures that dweet has been sent
+
 	    myDoc.get().then(doc => {
-	    	//var pDates = doc.data().hab.dates;
-	    	console.log(doc.data()[hab].dates)
-		    myDoc.set({
-				[hab]: {
-					dates: [doc.data()[hab].dates, utc], 
-					startDate: doc.data()[hab].startDate
-				} // habit in firebase is updated as well
-		    });
+	    	var habt = doc.data()[hab];
+	    	var length = Object.keys(habt.dates).length;
+	    	var dts = [];
+	    	console.log(habt);
+	    	console.log(length);
+	    	for (let q=0; q <= length; q++){
+	    		dts[q] = habt.dates[q];
+	    	}
+	    	dts[length] = utc;
+	    	console.log(dts);
+	    	myDoc.update({
+	    		[hab]: {
+	    			dates: dts
+	    		}
+	    	});
 		});
 	}
 
@@ -101,7 +109,7 @@ $(() =>  {
 		myDoc.update({
 				[hab]: { // adds your new habit to firebase habit array
 					"startDate":utc, 
-					"dates":[]
+					"dates":{}
 				}
 		});
 	});
