@@ -26,10 +26,9 @@ $(() =>  {
 		firebase.auth().signInWithPopup(provider).then((result) => {
 			var user = result.user; // sets current user to whoever signed in
 			myDoc = db.collection("users").doc(user.uid); // sets or creates doc for user
-			$("#sign").html("<b>"+user.displayName+"</b>"); // puts user's name on sign in button
-
+			$("#sign").html("<h2>"+user.displayName+"</h1>"); // puts user's name on sign in button
 			if (!docArr.includes(user.uid)) { // if new user
-				alert("Welcome to habitree " + user.displayName); // welcomes new user
+				alert("Welcome to habitree, " + user.displayName); // welcomes new user
 				myDoc.set({ // lays out format for new user document
 					"Get started with habitree": {
 						startDate: utc,
@@ -40,21 +39,17 @@ $(() =>  {
 			}
 
 			else {
-				alert("Welcome back " + user.displayName); // welcomes previous user
-				myDoc.get()
-				.then(doc => {
+				alert("Welcome back, " + user.displayName); // welcomes previous user
+				myDoc.get().then(doc => {
 					var habArr = Object.entries(doc.data());
 					console.log(doc.data());
 					for(var i in habArr) {
 						console.log(habArr[i]);
 						newHabit(habArr[i][0]); // spawns habit buttons for each habit
-						var dates = habArr[i][1].dates;
-						for (var j=dates.length-1; j > dates.length-4; j--)
-							if (Date.parse(dates[j])-Date.parse(dates[j-1]) != 86400000)
-								console.log(dates.length-j);
-								// not consecutive
-						// }
-						// $("#habits").append();
+						var dates = habArr[i][1].dates; // array of dates habit done
+						var strk = streak(dates);
+						$("#"+habArr[i][0]).append("<h2> Streak: " + strk[0] + "</h2>");
+						$("#"+habArr[i][0]).append("<h2> Face: " + strk[1] + "</h2>");
 						// calculates streak and displays for each
 						// delete habit button and function
 					}
@@ -65,43 +60,93 @@ $(() =>  {
 
 	function newHabit(hab) {
 		$("#habits").append(
-			"<p>"+ hab +"</p>" + "<button id=\"" + hab + "\"> Do habit </button>" 
+			"<h4>"+ hab +"</h4>" + 
+			"<button class='btn btn-primary btn-lg' id='" + hab + "'> Do habit </button>" +
+			"<button class='btn btn-primary btn-lg mx-2' id='" + hab + "Del'> Delete habit </button>"
 			); // creates new button object with name hab
 		return hab;
 	}
 
 	function send(hab) { // should also post to firebase
-	    var link = "https://dweet.io/dweet/for/hbtr?" + hab; // send streak here too
-	    var xmlHttp = new XMLHttpRequest();
-	    xmlHttp.open("GET", link, false); // dweets hab to the link
-	    xmlHttp.send(null);
-	    console.log(xmlHttp.responseText); // reassures that dweet has been sent
-
 	    myDoc.get().then(doc => {
-	    	var habt = doc.data()[hab];
-	    	var length = Object.keys(habt.dates).length;
-	    	var dts = [];
+	    	var habt = doc.data()[hab]; // gets current habit data
+	    	var length = Object.keys(habt.dates).length; // gets length of habit dates
+	    	var dts = []; // dates array
 	    	console.log(habt);
 	    	console.log(length);
-	    	for (let q=0; q <= length; q++){
-	    		dts[q] = habt.dates[q];
+	    	if (length != 0)
+		    	for (let q=0; q <= length; q++){
+		    		dts[q] = habt.dates[q]; // writes current dates from firestore to dts array
+		    	}
+
+	    	if (dts[length-1] != utc) { // if today's date isn't already on utc
+				dts.push(utc); // appends today's date to end of dts
+		    	console.log(dts);
+
+		    	myDoc.update({
+		    		[hab]: {
+		    			dates: dts, // write dts to firestore dates, essentially just adding today's date
+		    			startDate: habt.startDate
+		    		}
+		    	});
+
+		    	var link = "https://dweet.io/dweet/for/hbtr?" + hab; // send streak here too
+			    var xmlHttp = new XMLHttpRequest();
+			    xmlHttp.open("GET", link, false); // dweets hab to the link
+			    xmlHttp.send(null);
+			    console.log(xmlHttp.responseText); // reassures that dweet has been sent
 	    	}
-	    	dts[length] = utc;
-	    	console.log(dts);
-	    	myDoc.update({
-	    		[hab]: {
-	    			dates: dts
-	    		}
-	    	});
+	    	else
+	    		alert("You already did this habit today!");
 		});
 	}
 
-	$("div > button").click(()=>{ // waits for sign in button to be clicked
+	function del(hab) {
+		myDoc.update({ [hab]:firebase.firestore.FieldValue.delete() }); // delete firebase entry
+		console.log(hab);
+		$("#"+hab).remove(); // delete html component
+	}
+
+	function streak(dates, back) {
+		var streak = 0; // consecutive days till today habit done
+		var back = 5; // how many days in past to look to calculate [face]
+		var face = 0; // consecutive days habit done since [back]
+
+		for (let j = dates.length - 1; j >= 0; j--) {
+			if (j == dates.length-back)
+				face = back;
+
+			if (Date.parse(dates[j])-Date.parse(dates[j-1]) != 86400000) {
+				streak = dates.length-j;
+				if (face != back)
+					face = dates.length-j;
+				break;
+			}
+		}
+		console.log("face " + face);
+
+		face /= back;
+		if (face >= .75)
+			face = ":D"; 
+		else if (face < .75 && face >= .5)
+			face = ":)"; 
+		else if (face < .5 && face >= .25)
+			face = ":|";
+		else if (face < .25 && face > 0)
+			face = ":(";
+		else 
+			face = "X(";
+
+		console.log(face);
+		return [streak, face];
+	}
+
+	$("#sign").click(()=>{ // waits for sign in button to be clicked
 		console.log("signing in");
 		signInButton();
 	});
 
-	$("body > button").click(()=>{ // waits for new habit button to be clicked
+	$("body > div > .input-group > span > button").click(()=>{ // waits for new habit button to be clicked
 		console.log("created");
 		var hab = newHabit($("#tx").val());
 		console.log(hab);
@@ -109,13 +154,21 @@ $(() =>  {
 		myDoc.update({
 				[hab]: { // adds your new habit to firebase habit array
 					"startDate":utc, 
-					"dates":{}
+					"dates":[]
 				}
 		});
 	});
 
 	$("#habits").on("click", "button", (b)=>{ // waits for habit button to be clicked
-		console.log("sent");
-		send($(b)[0].target.id);
+		hab = $(b)[0].target.id;
+
+		if (hab.substring(hab.length-3) == "Del") { // if button id ends with "Del", delete the habit
+			del(hab.substring(0, hab.length-3));
+			console.log("deleted");
+		}
+		else { // otherwise, it's a "Do habit" button and should send
+			send(hab);
+			console.log("sent"); 
+		}
 	});
 });

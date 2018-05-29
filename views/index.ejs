@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html>
 <%- include ./partials/head %>
-<body>
-	<div id="signin">
-		<button id="sign">Sign In</button>
+<body data-gr-c-s-loaded="true">
+	<div style="padding-top: 10px; padding-left: 20px">
+		<div class="row">
+			<img src="/img/tree.png" style="width:60px; height:60px; padding:5px">
+			<h1 style="padding: 10px"> Habitree </h1>
+
+			<div id="signin" class="mx-5" style="padding: 10px"> 
+				<button id="sign" class="btn btn-secondary btn-lg">Sign In</button>
+			</div>
+		</div>
+		<div class="input-group">
+			<input type="text" class="form-control col-md-3 my-2" id="tx">
+			<span class="input-group-append">
+				<button id="hbt" class="btn btn-primary btn-lg my-2">New Habit</button>
+			</span>
+		</div>
 	</div>
-	<input type="text" id="tx">
-	<button id="hbt">New Habit</button>
-	<div id="habits"></div>
+
+	<div class="row" style="padding-left: 15px">
+	<div class="jumbotron col-md-4 my-2 mx-3">
+		<div id="habits"></div>
+	</div>
+	</div>
 </body>
 <%- include ./partials/footer %>
 </html>
