@@ -90,6 +90,8 @@ $(() =>  {
 		    		}
 		    	});
 
+		    	streak()
+
 		    	var link = "https://dweet.io/dweet/for/hbtr?" + hab; // send streak here too
 			    var xmlHttp = new XMLHttpRequest();
 			    xmlHttp.open("GET", link, false); // dweets hab to the link
@@ -124,20 +126,9 @@ $(() =>  {
 			}
 		}
 		console.log("face " + face);
-
 		face /= back;
-		if (face >= .75)
-			face = ":D"; 
-		else if (face < .75 && face >= .5)
-			face = ":)"; 
-		else if (face < .5 && face >= .25)
-			face = ":|";
-		else if (face < .25 && face > 0)
-			face = ":(";
-		else 
-			face = "X(";
-
 		console.log(face);
+
 		return [streak, face];
 	}
 
