@@ -17,7 +17,7 @@ $(() =>  {
     	snapshot.forEach((doc) => {
     		docArr.push(doc.id); // adds all document ID's to docArr
     	});
-    })
+    });
 
 	var utc = new Date().toJSON().slice(0,10); // gets current date
 
@@ -48,6 +48,7 @@ $(() =>  {
 						newHabit(habArr[i][0]); // spawns habit buttons for each habit
 						var dates = habArr[i][1].dates; // array of dates habit done
 						var strk = streak(dates);
+						console.log(strk);
 						$("#"+habArr[i][0]).append("<h2> Streak: " + strk[0] + "</h2>");
 						$("#"+habArr[i][0]).append("<h2> Face: " + strk[1] + "</h2>");
 						// calculates streak and displays for each
@@ -70,14 +71,15 @@ $(() =>  {
 	function send(hab) { // should also post to firebase
 	    myDoc.get().then(doc => {
 	    	var habt = doc.data()[hab]; // gets current habit data
-	    	var length = Object.keys(habt.dates).length; // gets length of habit dates
+	    	console.log(habt);
+	    	var length = habt.dates.length; // length of habit dates
 	    	var dts = []; // dates array
 	    	console.log(habt);
-	    	console.log(length);
 	    	if (length != 0)
-		    	for (let q=0; q <= length; q++){
+		    	for (let q=0; q <= length-1; q++){
 		    		dts[q] = habt.dates[q]; // writes current dates from firestore to dts array
 		    	}
+		    console.log(dts);
 
 	    	if (dts[length-1] != utc) { // if today's date isn't already on utc
 				dts.push(utc); // appends today's date to end of dts
@@ -89,10 +91,9 @@ $(() =>  {
 		    			startDate: habt.startDate
 		    		}
 		    	});
+		    	var strk = streak(habt.dates);
 
-		    	streak()
-
-		    	var link = "https://dweet.io/dweet/for/hbtr?" + hab; // send streak here too
+		    	var link = "https://dweet.io/dweet/for/hbtr?" + strk[0] + "," + strk[1]; // posting face val to dweet
 			    var xmlHttp = new XMLHttpRequest();
 			    xmlHttp.open("GET", link, false); // dweets hab to the link
 			    xmlHttp.send(null);
@@ -107,9 +108,10 @@ $(() =>  {
 		myDoc.update({ [hab]:firebase.firestore.FieldValue.delete() }); // delete firebase entry
 		console.log(hab);
 		$("#"+hab).remove(); // delete html component
+		$("#"+hab+"Del");
 	}
 
-	function streak(dates, back) {
+	function streak(dates) {
 		var streak = 0; // consecutive days till today habit done
 		var back = 5; // how many days in past to look to calculate [face]
 		var face = 0; // consecutive days habit done since [back]
@@ -127,7 +129,6 @@ $(() =>  {
 		}
 		console.log("face " + face);
 		face /= back;
-		console.log(face);
 
 		return [streak, face];
 	}
@@ -158,6 +159,7 @@ $(() =>  {
 			console.log("deleted");
 		}
 		else { // otherwise, it's a "Do habit" button and should send
+			console.log(hab);
 			send(hab);
 			console.log("sent"); 
 		}
